@@ -6,7 +6,7 @@ CREATE TABLE users(
   lastname varchar(50) NOT NULL
 );
 
-ALTER TABLE users ADD COLUMN isadmin VARCHAR(50);
+ALTER TABLE users ADD COLUMN isadmin INTEGER;
 
 ALTER TABLE users ALTER COLUMN isadmin DROP DEFAULT;
 ALTER TABLE users ALTER isadmin TYPE bool USING isadmin::boolean;
