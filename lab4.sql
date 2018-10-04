@@ -28,7 +28,7 @@ CREATE TABLE orders{
 
 SELECT * FROM orders WHERE custumer_id = (SELECT custumer_id FROM custumers WHERE city = "New York");
 
-SELECT * FROM customers WHERE cusomer_id=(SELECT cusomer_id FROM orders HAVING sum(order_id) > 10);
+SELECT * FROM customers WHERE cusomer_id=(SELECT cusomer_id FROM orders GROUP BY custumer_id HAVING count(*) > 10);
 
 SELECT count(order_id) FROM orders;
 SELECT avg(order_id) FROM orders;
