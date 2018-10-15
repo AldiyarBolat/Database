@@ -21,7 +21,7 @@ SELECT * FROM custumers WHERE cust_name LIKE 'B%';
 
 CREATE TABLE orders{
 	order_id SERIAL PRIMARY KEY,
-	custumer_id INT,
+	custumer_id INT FOREIN KEY custumers(custumer_id),
 	description VARCHAR(250),
 	purch_amt INT
  };
