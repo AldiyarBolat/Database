@@ -1,53 +1,52 @@
 CREATE DATABASE lab4;
 
-CREATE TABLE warehouses(
-  code SERIAL,
+CREATE TABLE Warehouses(
+  code INT PRIMARY KEY,
   location VARCHAR(255),
-  capacity SERIAL
+  capacity INT
 );
 
-CREATE TABLE boxes(
-  code VARCHAR(4),
-  content VARCHAR(255),
-  value real,
-  waerhouse int
+CREATE TABLE Boxes(
+  code CHAR(4),
+  contents VARCHAR(255),
+  value REAL,
+  warehouse INT REFERENCES Warehouses(code)
 );
 
-INSERT INTO warehouses (location, capacity) values ('Chicago',3);
-INSERT INTO warehouses (location, capacity) values ('Chicago',4);
-INSERT INTO warehouses (location, capacity) values ('New York',7);
-INSERT INTO warehouses (location, capacity) values ('Los Angeles',2);
-INSERT INTO warehouses (location, capacity) values ('Ssn Frsncisco',8);
+INSERT INTO Warehouses(Code,Location,Capacity) VALUES(1,'Chicago',3);
+INSERT INTO Warehouses(Code,Location,Capacity) VALUES(2,'Chicago',4);
+INSERT INTO Warehouses(Code,Location,Capacity) VALUES(3,'New York',7);
+INSERT INTO Warehouses(Code,Location,Capacity) VALUES(4,'Los Angeles',2);
+INSERT INTO Warehouses(Code,Location,Capacity) VALUES(5,'San Francisco',8);
 
-INSERT INTO boxes (code, content, value, waerhouse) values ('DMN7', 'Rocks', 180, 3);
-INSERT INTO boxes (code, content, value, waerhouse) values ('4HSP', 'Rocks', 250, 1);
-INSERT INTO boxes (code, content, value, waerhouse) values ('4RT3', 'Scissors', 190, 4);
-INSERT INTO boxes (code, content, value, waerhouse) values ('7G3H', 'Rocks', 200, 1);
-INSERT INTO boxes (code, content, value, waerhouse) values ('8jN6', 'Papers', 75, 1);
-INSERT INTO boxes (code, content, value, waerhouse) values ('8Y6U', 'Papers', 50, 3);
-INSERT INTO boxes (code, content, value, waerhouse) values ('9j6F', 'Papers', 175, 2);
-INSERT INTO boxes (code, content, value, waerhouse) values ('LL08', 'Rocks', 140, 4);
-INSERT INTO boxes (code, content, value, waerhouse) values ('PQH6', 'Scissors', 125, 1);
-INSERT INTO boxes (code, content, value, waerhouse) values ('P2T6', 'Scissors', 150, 2);
-INSERT INTO boxes (code, content, value, waerhouse) values ('TUSS', 'Papers', 90, 5);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('0MN7','Rocks',180,3);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('4H8P','Rocks',250,1);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('4RT3','Scissors',190,4);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('7G3H','Rocks',200,1);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('8JN6','Papers',75,1);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('8Y6U','Papers',50,3);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('9J6F','Papers',175,2);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('LL08','Rocks',140,4);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('P0H6','Scissors',125,1);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('P2T6','Scissors',150,2);
+INSERT INTO Boxes(Code,Contents,Value,Warehouse) VALUES('TU55','Papers',90,5);
 
---4
-SELECT * FROM warehouses;
---5
-SELECT * FROM boxes WHERE value > 150;
---6
-SELECT * FROM boxes ORDER BY content;
---7
-SELECT code, capacity FROM warehouses;
---8
-SELECT code, capacity FROM warehouses WHERE capacity > 2;
---9
-INSERT INTO warehouses (location,capacity) values ('New York', 3);
---10
-INSERT INTO boxes (code, content, value, waerhouse) values ('H5RT', 'Papers', 200, 2);
---11
-UPDATE boxes SET value = (value * 0.85) WHERE value=(SELECT value FROM boxes ORDER BY value LIMIT 1 OFFSET 2);
---12
-DELETE FROM boxes WHERE value > 150;
---13
-DELETE FROM boxes WHERE waerhouse=(SELECT code FROM warehouses WHERE location = 'New York' GROUP BY code) RETURNING *;
+SELECT * FROM Warehouses;
+
+SELECT * FROM Boxes WHERE value IN (SELECT value FROM Boxes WHERE value >=50 AND value <=150);
+
+SELECT DISTINCT ON (Boxes) warehouse FROM Boxes;
+
+SELECT DISTINCT ON (Boxes) warehouse FROM Boxes WHERE contents IN (SELECT contents FROM Boxes WHERE contents = 'Papers');
+
+SELECT warehouse, count(code) FROM Boxes GROUP BY warehouse;
+
+INSERT INTO Warehouses (code, location, capacity) VALUES (6, 'New York', 3);
+
+INSERT INTO Boxes (code, contents, value, warehouse) VALUES ('H5RT', 'Papers', 200, 2);
+
+UPDATE Boxes SET value = value * 0.8 WHERE value = (SELECT value FROM Boxes ORDER BY value LIMIT 1 OFFSET 2);
+
+DELETE FROM Boxes WHERE value IN (SELECT value FROM Boxes WHERE value <= 150);
+
+DELETE FROM Boxes WHERE warehouse IN (SELECT code FROM Warehouses WHERE location = 'New York') RETURNING code, warehouse;
